@@ -4,29 +4,38 @@ import { z } from "zod";
 const handler = createMcpHandler(
   async (server) => {
     server.tool(
-      "echo",
-      "description",
+      "courseRecommender",
+      "Give a course recommendation based on experience level",
       {
-        message: z.string(),
+        experienceLevel: z.enum(["beginner", "intermediate"]),
       },
-      async ({ message }) => ({
-        content: [{ type: "text", text: `Tool echo: ${message}` }],
+      async ({ experienceLevel }) => ({
+        content: [
+          {
+            type: "text",
+            text: `I recommed you take the ${
+              experienceLevel === "beginner"
+                ? "Professional Typescript"
+                : "Professional React & Next.ts"
+            } course.`,
+          },
+        ],
       })
     );
   },
   {
     capabilities: {
       tools: {
-        echo: {
-          description: "Echo a message",
+        courseRecommender: {
+          description: "Give a course recommendation based on experience level",
         },
       },
     },
   },
   {
     redisUrl: process.env.REDIS_URL,
-    sseEndpoint: '/sse',
-    streamableHttpEndpoint: '/mcp',
+    sseEndpoint: "/sse",
+    streamableHttpEndpoint: "/mcp",
     verboseLogs: true,
     maxDuration: 60,
   }
